@@ -26,17 +26,16 @@ app1 ansible_host=10.10.24.200
 app2 ansible_host=10.10.24.201
 
 [lb]
-lb1 ansible_host=10.10.24.202:22
+lb1 ansible_host=10.10.24.202:22 # redirect ansible to non standard port
 
 [local]
 control ansible_connection=local
 ```
 
 ```bash
-ansible -m ping all # ping all hosts in the inventory file, if there is an error, check  the inventory = ./inventory.ini in ansible.cfg
+ansible -m ping all # ping all hosts in the inventory file, if there is an error, edit ansible.cfg "inventory = ./inventory.ini.
 
-ansible --list-hosts web # lists the hosts in ghe group web
-ansible  
+ansible --list-hosts web # lists the hosts in ghe group web 
 ```
 
 Target specific group from the inventory file, globing and exemptions.
@@ -45,7 +44,7 @@ Target specific group from the inventory file, globing and exemptions.
 ansible -m ping lb # execute on a group
 ansible -m ping "*"  # same as all
 ansible -m ping app* # globing
-ansible -m ping lb:web
+ansible -m ping lb:web # ping lb and web
 ansible -m ping \!web # execute on all but this group
 ansible -m ping web[0] # execute on the first of array
 ```
@@ -55,9 +54,9 @@ ansible -m ping web[0] # execute on the first of array
 ```bash
 ansible -m shell -a "uname" all # ansible -module shell -attribute "uname" to be executed on all hosts in the inventory.ini
 ansible --list-hosts all -i inventory.ini
-ansible -m ping all -u root
+ansible -m ping all -u root # connect as a different user, root in this case
 ansible -m shell -a "uname" all # return the os of the host
-ansible -m command -a "/bin/false" \!local
+ansible -m command -a "/bin/false" \!local # return a error execute on all but local, and we escape the ! because bash.
 ```
 
 ## Ansible Tasks
@@ -67,8 +66,8 @@ Command consist of the Ansible command, options, and host-pattern.
 Example of pinging all the hosts associated with out inventory.
 
 ```bash
-       ansible         -m        ping    all
-# ansible command,  the module,  ping, inventory all.
+       ansible         -m        ping                 all
+# ansible command,  the module,  ping, all hosts listed in the inventory file.
 ```
 
 ## Ansible Playbooks
@@ -98,45 +97,53 @@ To run this example playbook.
 ansible-playbook ping.yml
 ```
 
-What does it take to construct a system using playbooks?
-
-*Package Management  
-What packages will our system need? Install all packages needed ro tun our system. Patching. Package manager.
++ Examples of hosts, tasks, handlers, ...
 
 ```yaml
 ---
-  - hosts: lb
-    tasks:
-    - name: Install apache
-      yum: name=httpd state=latest
+  - hosts: lb # Tasks will be executed on hosts in the lb group
+    tasks:  # task followed by list of tasks assigned with -, when the list is over indentation must go back 2 spaces
+    - name: Install apache # Arbitrary name of the task, for debugging purpose to know where the playbook encounter a error.
+      yum: # module name
+        name: httpd # the packet manager yum will manipulate httpd package.
+        state: latest # this will update the package to the latest version, if not already otherwise will be ignored.
 ```
 
-Once installed is time for configuration.
+Copy file, Sync directory.
 
 ```yml
 ---
-  - hosts: lb
-    tasks:
-    - name: Copy config file
-      copy: src=./config.cfg dest=/etc/config.cfg
+  - hosts: lb # will act on all hosts in the [lb] group in the inventory.ini
+    tasks: # list the tasks to be executed
+    - name: Copy config file # name of the task, can be whatever you will.
+      copy: # name of the module
+        src: ./config.cfg # source file on the localhost
+        dest: /etc/config.cfg # destination on the remote host
 
-  - hosts: web
-    task:
-    - name: Synchronize folders
-      synchronize: src=./app dest=/var/www/html/app
+  - hosts: web # will act on all hosts in [web] group in the inventory.ini file
+    task: # list of the tasks to be done
+    - name: Synchronize folders # arbitrary name of the task
+      synchronize: # name of the module this one will sync directory
+        src: ./app # source dir on the localhost
+        dest: /var/www/html/app # destination dir on remote hosts
 ```
 
-After the config is done is time to restart the service if needed.
+Edit config file and restart using handlers
 
 ```yml
 ---
-  - hosts: lb
-    tasks:
-    - name: Configure port number
-      lineinfile: path=/etc/config.cfg regexp='^port' line='port=80'
-      notify: Restart apache
+  - hosts: lb # will act on all hosts in the [lb] group in the inventory.ini
+    tasks: # list of the tasks to be executed
+    - name: Configure port number # arbitrary name for debugging purpose 
+      lineinfile: # edit a line in a file on the remote host
+        path: /etc/config.cfg # path where the file we will edit is on the remote host
+        regexp: ^port # using regex to find the line. In this case ^ mean the line start with port.
+        line: 'port=80' # the whole line will be replaced with the single quoted string
+      notify: Restart apache # if a change is made, then tell the handler with the this name to do his thing notify and name must be exactly the same.
 
-    handlers:
-    - name: Restart apache
-      service: name=httpd status=restarted
+    handlers: # handlers if notified they will do, otherwise will be ignored 
+    - name: Restart apache # name of the handler must be exact as notify.
+      service: # service will be called
+        name: httpd # name of the service to be managed
+        status: restarted # restart this service
 ```
