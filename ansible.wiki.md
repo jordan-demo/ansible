@@ -57,6 +57,7 @@ ansible --list-hosts all -i inventory.ini
 ansible -m ping all -u root # connect as a different user, root in this case
 ansible -m shell -a "uname" all # return the os of the host
 ansible -m command -a "/bin/false" \!local # return a error execute on all but local, and we escape the ! because bash.
+ansible -m service -a "name=httpd state=stopped" --become lb # module service will find the httpd and put it in stopped state become will elevate to root and this will be run on all hosts in the [lb] group in the inventory.ini
 ```
 
 ## Ansible Tasks
@@ -147,3 +148,14 @@ Edit config file and restart using handlers
         name: httpd # name of the service to be managed
         status: restarted # restart this service
 ```
+
+```yml
+# all-playbooks.yml name of the playbook
+
+---
+# when ansible-playbook playbooks/all-playbooks.yml is called, it will execute the imported playbooks in order.
+  - import_playbook: yum-update.yml
+  - import_playbook: install-services.yml
+  - import_playbook: setup-app.yml
+  - import_playbook: setup-lb.yml
+  ```
