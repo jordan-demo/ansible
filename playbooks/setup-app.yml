@@ -1,0 +1,18 @@
+# setup-app.yml
+---
+  - hosts: web
+    tasks:
+      - name: Upload application file
+        copy:
+          src: ../index.html
+          dest: /var/www/html
+          mode: 0755
+      
+      - name: configure php.ini file
+        lineinfile:
+          path: /etc/php/8.0/apache2/php.ini
+          regexp: ^short_open_tag
+          line: 'short_open_tag=On'
+
+      - name: restart apache
+        service: name=apache2 state=restarted
