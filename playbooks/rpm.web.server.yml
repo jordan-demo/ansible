@@ -1,0 +1,19 @@
+# rpm.web.server.yml
+# This playbook will run on a fedora35 lxc container and install and configure apache webserver.
+# No become needed in the ansible.cfg the default user is root and the ssh key is appropriate.
+---
+  - hosts: rpm.web
+    tasks:
+      - name: install httpd
+        yum:
+          name: 
+            - httpd
+            - php
+          state: latest
+
+      - name: start and enable httpd
+        service:
+          name: httpd
+          state: started
+          enabled: yes
+      
