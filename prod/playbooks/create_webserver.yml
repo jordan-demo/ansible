@@ -1,6 +1,7 @@
 # create_webserver.yml
 ---
 - hosts: web1
+  gather_facts: no
   roles:
-    - create_webserver
+#   - create_webserver
     - secure_ssh

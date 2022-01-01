@@ -1,20 +1,90 @@
 ---
 # tasks file for secure_ssh
 
+
+- name: Create group
+  ansible.builtin.group:
+    name: jordan
+    state: present
+
 - name: Create user
   user:
     name: jordan
-    password: {{ upassword | password_hash('sha512') }}
+    password: $6$5wJywg5gNFPZ2BrZ$ewVtLX7lTtKDttN2FehDFtrFjQrblXjZLyj3P8cppEkYLIqPwVFITCrpTqjXtkX7pZP4O2/tg9yVtokDKAWeK/
     group: jordan
     groups: sudo
     append: yes
     uid: 1000
     create_home: yes
     shell: /bin/bash
+    state: present
+
+- name: Create .ssh
+  file:
+    path: /home/jordan/.ssh/
+    state: directory
+    owner: jordan
+    group: jordan
+    mode: 0700
+
+- name: Create authorized_keys
+  file:
+    dest: /home/jordan/.ssh/authorized_keys
+    state: touch
+    owner: jordan
+    group: jordan
+    mode: 0600
+
+- name: static public key
+  lineinfile:
+    path: /home/jordan/.ssh/authorized_keys
+    line: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDhl3hs9BJmhJ+ruGedwqHllkzIcxS3aPE9odjmXh2yvI3DoxjX7+yNj7ChaYk2097fk+2k/GVAYTkdZvL4uR4/xArpaZlHX6MkewWwdeBROIDZJU3YLsW/9pfox9IwIp7R4lg+hElcYjP6Gr1d22Z+F7m6MIOhwclIJW7FfszUqTNzv0uVSFnJI/DDzit0C3oRHNRf5F9NnqiyEiyOzYMoFoZX0Xca7Exp/h13v/ilV81IiciJKls0fEerJUvFqkF23I3+XEPVLyt4YX27v0TV+9jELrVebrdSE0T+K15TIp0af/rJ09riykgcEXqbWOmjgYp0awNwsFz62+ej8ZcMFPyiGPoecCqlWwoa1EAmJkdAQmwhoqk3jod7tM0+MEhonWizZxdHGOvpI8Hq2WkDZiNoTXXmDQfryikhfDEW4HlMFEcxZYkdZrKG1ppmrtouZ03rF1r0QJWuBnh2v/HPF2xhbYUdVl5r/zTfuVV/2raAd41fjZXDDmkIUeia2sk= jordan@T470"
     
-- name: Disable ssh password authentication
+- name: Disable PasswordAuthentication
   lineinfile:
     path: /etc/ssh/sshd_config
     regexp: ^#PasswordAuthentication
     line: 'PasswordAuthentication no'
   notify: restart_ssh
+
+- name: Disable PermitRootLogin
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: ^#PermitRootLogin
+    line: 'PermitRootLogin no'
+
+- name: Disable ChallengeResponseAuthentication
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: ^#ChallengeResponseAuthentication
+    line: 'ChallengeResponseAuthentication no'
+
+- name: Disable UsePAM
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: ^#UsePAM
+    line: 'UsePAM no'
+
+- name: Add AuthenticationMethods publickey
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    line: 'AuthenticationMethods publickey'
+
+- name: Add PubkeyAuthentication
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    line: 'PubkeyAuthentication yes'
+
+- name: Limint users
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    line: 'AllowUsers jordan'
+
+- name: Disable PermitEmptyPasswords
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: ^#PermitEmptyPasswords
+    line: 'PermitEmptyPasswords no'
+- 
+    
+
