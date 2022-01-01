@@ -58,6 +58,7 @@ ansible -m ping all -u root # connect as a different user, root in this case
 ansible -m shell -a "uname" all # return the os of the host
 ansible -m command -a "/bin/false" \!local # return a error execute on all but local, and we escape the ! because bash.
 ansible -m service -a "name=httpd state=stopped" --become lb # module service will find the httpd and put it in stopped state become will elevate to root and this will be run on all hosts in the [lb] group in the inventory.ini
+ansible -m setup app1 # display all the facts about that host.
 ```
 
 ## Ansible Tasks
@@ -159,3 +160,56 @@ Edit config file and restart using handlers
   - import_playbook: setup-app.yml
   - import_playbook: setup-lb.yml
   ```
+
+## Variables
+
+Ansible provide us with variables and metadata about the host we are interacting with when running playbooks.
+
++ During the TASK **[Gathering Facts]** step, these variables become populated.
++ Gathers useful facts about our host and can be used in playbooks.
++ Use the **status** module to see all of the facts gathered during the **TASK[Gathering Facts]** step.
++ Use jinja2 templating to evaluate these expressions.
+
+```bash
+ansible -m setup app1 # Show the gathered facts or metadata for host app1
+```
+
+```yml
+---
+  - name: add webserver info 
+    copy: # the name of the module
+      dest: /var/www/html/info.php # which file to manipulate
+      content: "{{ ansible_hostname }}" # content will echo the value of the ansible_hostname, which can be found in or the gathering facts. The double curly must be in quotes.
+```
+
++ Create local variables in a playbook, using **vars** to create a key/value pairs and dictionary/map of variables.
+
+```yml
+---
+  vars: # Create a dictionary of variables
+    path_to_app: "/var/www/html" # key value pair 
+    another_variable: "Hello World" # key value pair
+  tasks: # tasks will call the vars.
+    - name: Add webserver info # arbitrary name of the task
+      copy: # module name
+        dest: "{{ path_to_app }}/info.php" # which file to be edited on the remote host quoted in double curly is the name of the variable which will return the value.
+        content: "{{ another_variable }}" # another variable for fun.
+```
+
++ Create variables files and import them into our playbook. 
+
++ Ansible also gives us the ability to register variables from tasks that run to ger information about its execution. Create variables from info returned from tasks ran using **register**. Call the registered variables for later use. Use the **debug** module anytime to see variables ad debug our playbooks
+
+```yml
+---
+  vars: # Dictionary of key: value pair
+    path_to_app: "/var/www/html" # key: "value" pair
+
+  tasks:  
+    - name: See directory contents
+      command: ls -la {{ path_to_app }} # command module will execute ls -la
+      register: dir_content # register the output from the command
+    - name: Debug directory contents
+      debug: # debug module will display the results
+        msg: "{{ dir_content }}" # will display the content of this variable, which was generated from the ls -la command.
+```
