@@ -11,7 +11,11 @@ Configuration file will be search in the following order:
 
 ```cfg
 # ansible.cfg
-inventory = ./inventory.ini
+[defaults]
+inventory = ./inventory.ini # where the inventory file is located
+remote_user = root  # instead of attempting to ssh with current user, try with root in this case
+host_key_checking = False # this disable the lookup in known hosts and the prompting to be added to the list
+private_key_file = ~/.ssh/aws.pem # where the private key is located, if not set it will use id_rsa
 ```
 
 ## Inventory.ini
@@ -184,7 +188,6 @@ ansible -m setup app1 # Show the gathered facts or metadata for host app1
 
 + Create local variables in a playbook, using **vars** to create a key/value pairs and dictionary/map of variables.
 
-
 ```yml
 ---
   vars: # Create a dictionary of variables
@@ -197,7 +200,7 @@ ansible -m setup app1 # Show the gathered facts or metadata for host app1
         content: "{{ another_variable }}" # another variable for fun.
 ```
 
-+ Create variables files and import them into our playbook. 
++ Create variables files and import them into our playbook.
 
 + Ansible also gives us the ability to register variables from tasks that run to ger information about its execution. Create variables from info returned from tasks ran using **register**. Call the registered variables for later use. Use the **debug** module anytime to see variables ad debug our playbooks
 
@@ -230,7 +233,7 @@ ansible-galaxy init role_name # will create a roles whit the following structure
 ```
 
 ```bash
-jordan@T470:~/ansible/ansible-roles/roles/web$ ls -R # This is the default directory structure of a freshly created role.
+user@host:~/ansible/ansible-roles/roles/web$ ls -R # This is the default directory structure of a freshly created role.
 .:
 defaults  handlers  meta  README.md  tasks  tests  vars
 
