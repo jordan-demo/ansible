@@ -1,5 +1,9 @@
 # This is my Ansible Documentation December 2021
 
+>Ansible doesn't have any automatic way to keep track of things and undo on failure, but it does offer you some functionality to handle failures yourself.  
+This is implemented using blocks. With blocks you can define a set of tasks to be executed in the rescue: section. These can be anything you want, and with careful planning you could should be able to get it to undo everything.
+Though if the system is broken in some unusual way, your 'undo' tasks may also fail. If your system is in a VM where you could checkpoint/snapshot, or running on a filesystem (ie zfs) that supports checkpoints/snapshots you could certainly use those facilities to revert.
+
 ## ansible.cfg
 
 Configuration file will be search in the following order:
@@ -172,7 +176,7 @@ Ansible provide us with variables and metadata about the host we are interacting
 + During the TASK **[Gathering Facts]** step, these variables become populated.
 + Gathers useful facts about our host and can be used in playbooks.
 + Use the **status** module to see all of the facts gathered during the **TASK[Gathering Facts]** step.
-+ Use jinja2 templating to evaluate these expressions.
++ Use jinja2 templates to evaluate these expressions.
 
 ```bash
 ansible -m setup app1 # Show the gathered facts or metadata for host app1
