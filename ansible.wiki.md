@@ -184,6 +184,7 @@ ansible -m setup app1 # Show the gathered facts or metadata for host app1
 
 + Create local variables in a playbook, using **vars** to create a key/value pairs and dictionary/map of variables.
 
+
 ```yml
 ---
   vars: # Create a dictionary of variables
