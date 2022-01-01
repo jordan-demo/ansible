@@ -1,0 +1,6 @@
+# create_webserver.yml
+---
+- hosts: web1
+  roles:
+    - create_webserver
+    - secure_ssh

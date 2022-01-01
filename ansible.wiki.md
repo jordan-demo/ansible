@@ -241,10 +241,10 @@ user@host:~/ansible/ansible-roles/roles/web$ ls -R # This is the default directo
 .:
 defaults  handlers  meta  README.md  tasks  tests  vars
 
-./defaults:  # 
+./defaults:  # default variables
 main.yml
 
-./handlers:
+./handlers: # handlers
 main.yml
 
 ./meta:

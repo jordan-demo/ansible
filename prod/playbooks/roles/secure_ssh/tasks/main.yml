@@ -1,0 +1,20 @@
+---
+# tasks file for secure_ssh
+
+- name: Create user
+  user:
+    name: jordan
+    password: {{ upassword | password_hash('sha512') }}
+    group: jordan
+    groups: sudo
+    append: yes
+    uid: 1000
+    create_home: yes
+    shell: /bin/bash
+    
+- name: Disable ssh password authentication
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: ^#PasswordAuthentication
+    line: 'PasswordAuthentication no'
+  notify: restart_ssh

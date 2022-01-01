@@ -1,0 +1,6 @@
+---
+# handlers file for secure_ssh
+- name: restart_ssh
+  service:
+    name: sshd
+    state: restarted

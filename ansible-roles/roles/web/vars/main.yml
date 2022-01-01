@@ -1,2 +1,4 @@
 ---
 # vars file for web
+
+path_to_app: "/var/html"
