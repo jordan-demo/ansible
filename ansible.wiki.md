@@ -214,3 +214,41 @@ ansible -m setup app1 # Show the gathered facts or metadata for host app1
       debug: # debug module will display the results
         msg: "{{ dir_content }}" # will display the content of this variable, which was generated from the ls -la command.
 ```
+
+## Roles
+
+Ansible provides a framework that makes each part of variables. tasks, templates and modules fully independent of one another.
+
++ Group tasks together in a way tha is self containing.
++ Clean and pre-defined directory structure.
++ Break up the configurations into files-
++ Reuse code by others who need similar configurations.
++ Easy to modify and reduces syntax errors.
+
+```bash
+ansible-galaxy init role_name # will create a roles whit the following structure. but not all dirs are required.
+```
+
+```bash
+jordan@T470:~/ansible/ansible-roles/roles/web$ ls -R # This is the default directory structure of a freshly created role.
+.:
+defaults  handlers  meta  README.md  tasks  tests  vars
+
+./defaults:  # 
+main.yml
+
+./handlers:
+main.yml
+
+./meta:
+main.yml
+
+./tasks:
+main.yml
+
+./tests:
+inventory  test.yml
+
+./vars:
+main.yml
+```
