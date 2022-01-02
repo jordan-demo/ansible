@@ -81,7 +81,7 @@ ansible -m ping all -u root # connect as a different user, root in this case
 ansible -m shell -a "uname" all # return the os of the host
 ansible -m command -a "/bin/false" \!local # return a error execute on all but local, and we escape the ! because bash.
 ansible -m service -a "name=httpd state=stopped" --become lb # module service will find the httpd and put it in stopped state become will elevate to root and this will be run on all hosts in the [lb] group in the inventory.ini
-ansible -m setup app1 # display all the facts about that host.
+ansible -m setup hostname # display all the facts about that host.
 ansible-playbook playbook_name.yml --check # Dry run, no changes will be made
 ansible-playbook playbook_name.yml --tags upload # This will run only the tasks with the upload tag.
 ansible-playbook playbook_name.yml --skip-tags upload # This will play all but the upload tagged tags.
