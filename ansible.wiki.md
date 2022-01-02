@@ -92,9 +92,11 @@ ansible-vault view secret-variables.yml # View the content of the vault file.
 
 ## [Ansible Tasks](#Ansible-Basics-wiki)
 
-Ansible tasks are a way to run adhoc commands against our inventory in a one-line single executable. Tasks are the basic building blocks of Ansible's execution and configuration.  
-Command consist of the Ansible command, options, and host-pattern.  
-Example of pinging all the hosts associated with out inventory.
++ Ansible tasks are a way to run adhoc commands against our inventory in a one-line single executable. Tasks are the basic building blocks of Ansible's execution and configuration.  
+
++ Command consist of the Ansible command, options, and host-pattern.  
+
++ Example of pinging all the hosts associated with out inventory.
 
 ```bash
        ansible         -m        ping                 all
