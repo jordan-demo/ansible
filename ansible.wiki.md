@@ -8,7 +8,7 @@ Created Jan. 2022, following the course ***Introduction to Ansible v2.7*** *Broc
 |[ansible.cfg](#ansible.cfg)|[Inventory.ini](#Inventory.ini)|[Ansible Commands](#Ansible%20Commands)|
 |[Ansible Task](#Ansible%20Tasks)|[Ansible Tasks](#Ansible%20Tasks)|[Ansible Playbooks](#Ansible%20Playbooks)|
 |[Variables](#Variables)|[Roles](#Roles)|[Check Mode](#Check%20mode)|
-|[Error handling](#Error%20handling%20in%20Playbooks)|[Tags](#Tags)|[Vault](#Ansible%Vault)|
+|[Error handling](#Error%20handling%20in%20Playbooks)|[Tags](#Tags)|[Vault](#Ansible%20Vault)|
 |[Prompts](#Prompts)|
 
 ## Warning
