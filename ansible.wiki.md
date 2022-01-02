@@ -5,7 +5,7 @@ Created Jan. 2022, following the course ***Introduction to Ansible v2.7*** *Broc
 
 |Topic links:  |          |           |
 |---|---|---|
-|[ansible.cfg](#ansible-cfg) | [Inventory.ini](#Inventory-ini) | [Ansible Commands](#Ansible-Commands)|
+|[ansible.cfg](#Configuration-files) | [Inventory.ini](#Configuration-files) | [Ansible Commands](#Ansible-Commands)|
 |[Ansible Task](#Ansible-Tasks) | [Ansible Tasks](#Ansible-Tasks) | [Ansible Playbooks](#Ansible-Playbooks)|
 |[Variables](#Variables) | [Roles](#Roles) | [Check Mode](#Check-mode)|
 |[Error handling](#Error-handling-in-Playbooks) | [Tags](#Tags) | [Vault](#Ansible-Vault)|
@@ -17,7 +17,9 @@ Created Jan. 2022, following the course ***Introduction to Ansible v2.7*** *Broc
 This is implemented using blocks. With blocks you can define a set of tasks to be executed in the rescue: section. These can be anything you want, and with careful planning you could should be able to get it to undo everything.
 Though if the system is broken in some unusual way, your 'undo' tasks may also fail. If your system is in a VM where you could checkpoint/snapshot, or running on a filesystem (ie zfs) that supports checkpoints/snapshots you could certainly use those facilities to revert.
 
-## [ansible.cfg](#Ansible-Basics-wiki)
+## Configuration files
+
++ [ansible.cfg](#Ansible-Basics-wiki)
 
 Configuration file will be search in the following order:
 
@@ -35,7 +37,7 @@ host_key_checking = False # this disable the lookup in known hosts and the promp
 private_key_file = ~/.ssh/aws.pem # where the private key is located, if not set it will use id_rsa
 ```
 
-## [Inventory.ini](#Ansible-Basics-wiki)
++ [Inventory.ini](#Ansible-Basics-wiki)
 
 The default inventory file is located in /etc/ansible/hosts, but that can be changed in ansible.cfg, or with -i /path/to/file using the command line.
 
