@@ -4,14 +4,14 @@
 
 - name: Create group
   ansible.builtin.group:
-    name: "{{ user_group }}"
+    name: "{{ secret_user_group }}"
     state: present
 
 - name: Create user
   user:
-    name: "{{ user_name }}"
-    password: "{{ user_passwd }}"
-    group: "{{ user_group }}"
+    name: "{{ secret_user_name }}"
+    password: "{{ secret_user_passwd }}"
+    group: "{{ secret_user_group }}"
     groups: sudo
     append: yes
     create_home: yes
@@ -20,25 +20,25 @@
 
 - name: Create .ssh
   file:
-    path: /home/"{{ user_name }}"/.ssh/
+    path: /home/"{{ secret_user_name }}"/.ssh/
     state: directory
-    owner: "{{ user_name }}"
-    group: "{{ user_group }}"
+    owner: "{{ secret_user_name }}"
+    group: "{{ secret_user_group }}"
     mode: 0700
 
 - name: Create authorized_keys
   file:
-    dest: /home/"{{ user_name }}"/.ssh/authorized_keys
+    dest: /home/"{{ secret_user_name }}"/.ssh/authorized_keys
     state: touch
-    owner: "{{ user_name }}"
-    group: "{{ user_name }}"
+    owner: "{{ secret_user_name }}"
+    group: "{{ secret_user_group }}"
     mode: 0600
 
 - name: static public key
   lineinfile:
-    path: /home/"{{ user_name }}"/.ssh/authorized_keys
+    path: /home/"{{ secret_user_name }}"/.ssh/authorized_keys
     line: "{{ user_pubkey }}"
-    
+
 - name: Disable PasswordAuthentication
   lineinfile:
     path: "{{ path_sshd_config }}"

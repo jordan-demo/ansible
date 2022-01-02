@@ -67,6 +67,9 @@ ansible -m shell -a "uname" all # return the os of the host
 ansible -m command -a "/bin/false" \!local # return a error execute on all but local, and we escape the ! because bash.
 ansible -m service -a "name=httpd state=stopped" --become lb # module service will find the httpd and put it in stopped state become will elevate to root and this will be run on all hosts in the [lb] group in the inventory.ini
 ansible -m setup app1 # display all the facts about that host.
+ansible-playbook playbook_name.yml --check # Dry run, no changes will be made
+ansible-playbook playbook_name.yml --tags upload # This will run only the tasks with the upload tag.
+ansible-playbook playbook_name.yml --skip-tags upload # This will play all but the upload tagged tags.
 ```
 
 ## Ansible Tasks
@@ -259,3 +262,88 @@ inventory  test.yml
 ./vars:
 main.yml
 ```
+
+## Check mode
+
+Check mode or Dry Run Reports changes that Ansible would have to make on the end hosts rather than applying the changes.
+
++ Run Ansible commands without affection the remote system.
+
++ Reports changes back rather than actually making them,
+
++ Great for one node at a time basic configuration management use cases.
+
+```bash
+ansible-playbook playbook_name.yml --check
+```
+
+## Error handling in Playbooks.
+
+Change the default behavior of Ansible when certain events happen that may or may not need to report as a failure or changed status.
+
+```yml
+# check status.yml
+---
+  - hosts: web:lb
+    tasks:
+      - name: Check status of apache
+        command: service httpd status
+        changed_when: false # Suppress change status.
+      
+      - name: This will not fail
+        command: /bin/false
+        ignore_errors: yes # This is how to ignore error
+```
+
+## Tags
+
+Assigning **tags** to specific tasks in playbooks allows you to only call certain tasks in a very long playbook.
+
++ Only run sprcific parts of a playbook rather than all of the plays.
+
++ Add tags to any tasks and reuse if needed.
+
+Specify the tags you want to run ( or not run ) on the command line.
+
+```yml
+---
+  tasks:
+    - name: Upload application file
+      copy:
+        src: ../index.php
+        dest: "{{ path_to_app }}"
+      tags: upload
+
+    - name: Create simple info page.
+      copy:
+        dest: "{{ path_to_app }}/info.php"
+        content: "<h1>Hello, World!</h1>"
+      tags: create
+```
+```bash
+ansible-playbook playbook_name.yml --tags upload # This will run only the tags with the upload tag.
+ansible-playbook playbook_name.yml --skip-tags upload # This will play all but the upload tagged tasks.
+```
+
+## Ansible Vault
+
+Ansible **Vault** is a way to keep sensitive information in encrypted files, rather than plain texts, in your playbooks.
+
++ Keep passwords, keys, and sensitive variables in encrypted vault files.
+
++ Vault files can be shares trough source control.
+
++ Vault can encrypt pretty much any data structure file used by Ansible.
+
++ Password protected and the default cipher is AES
+
+```bash
+ansible-vault create secret-variables.yml
+ansible-vault edit secret-variables.yml
+ansible-vault view secret-variables.yml
+
+# This to work, call the playbook with the --ask-vault-pass
+
+ansible-playbook playbook_name.yml --ask-vault-pass
+
+
