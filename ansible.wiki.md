@@ -70,6 +70,9 @@ ansible -m setup app1 # display all the facts about that host.
 ansible-playbook playbook_name.yml --check # Dry run, no changes will be made
 ansible-playbook playbook_name.yml --tags upload # This will run only the tasks with the upload tag.
 ansible-playbook playbook_name.yml --skip-tags upload # This will play all but the upload tagged tags.
+ansible-vault create secret-variables.yml /path/to/file # Create a vault file and create the password
+ansible-vault edit secret-variables.yml # Edit the vault opens in the default bash editor 
+ansible-vault view secret-variables.yml # View the content of the vault file.
 ```
 
 ## Ansible Tasks
@@ -277,7 +280,7 @@ Check mode or Dry Run Reports changes that Ansible would have to make on the end
 ansible-playbook playbook_name.yml --check
 ```
 
-## Error handling in Playbooks.
+## Error handling in Playbooks
 
 Change the default behavior of Ansible when certain events happen that may or may not need to report as a failure or changed status.
 
@@ -299,7 +302,7 @@ Change the default behavior of Ansible when certain events happen that may or ma
 
 Assigning **tags** to specific tasks in playbooks allows you to only call certain tasks in a very long playbook.
 
-+ Only run sprcific parts of a playbook rather than all of the plays.
++ Only run specific parts of a playbook rather than all of the plays.
 
 + Add tags to any tasks and reuse if needed.
 
@@ -320,6 +323,7 @@ Specify the tags you want to run ( or not run ) on the command line.
         content: "<h1>Hello, World!</h1>"
       tags: create
 ```
+
 ```bash
 ansible-playbook playbook_name.yml --tags upload # This will run only the tags with the upload tag.
 ansible-playbook playbook_name.yml --skip-tags upload # This will play all but the upload tagged tasks.
@@ -345,5 +349,31 @@ ansible-vault view secret-variables.yml
 # This to work, call the playbook with the --ask-vault-pass
 
 ansible-playbook playbook_name.yml --ask-vault-pass
+```
 
+## Prompts
 
+There may be playbooks you run that need to prompt the user for certain input. You can this usint the **'vars_prompt'** section.
+
++ Can use the users input as variables within our playbooks.
+
++ Run certain tasks with conditional logic.
+
++ Common use is to ask for sensitive data.
+
++ Has uses outside of security as well.
+
+```yml
+---
+  vars_prompt:
+    - name: "upload_var" # The answer of the question will be stored in this variable
+      prompt: "Upload index.php file?"
+
+  tasks:
+    - name: Upload application file
+        copy:
+          src: ../index.php
+          dest: "{{ path_to_app }}"
+        when: upload_var == 'yes'
+        tags: upload
+```

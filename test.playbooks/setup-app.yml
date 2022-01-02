@@ -1,12 +1,32 @@
 # setup-app.yml
 ---
   - hosts: web
+    become: true
+
+    vars: 
+      path_to_app: "/var/www/html"
+
+    vars_prompts:
+      - name: "upload_var"
+        prompts: "Upload the index.php? "
+
+      - name: "create_info_page"
+        prompts: "Create info.php page? "
+
+
     tasks:
       - name: Upload application file
         copy:
-          src: ../index.html
+          src: ../index.php
           dest: /var/www/html
           mode: 0755
+        when: upload_var == "yes"
+
+      - name: Create info.php page
+        copy:
+          dest: " {{ path_to_app }}/info.php"
+          content: "<h1>Information about our webserver {{ ansible_hostname }}."
+        when: create_info_page = "yes"
       
       - name: configure php.ini file
         lineinfile:
