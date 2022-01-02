@@ -17,7 +17,7 @@ Created Jan. 2022, following the course ***Introduction to Ansible v2.7*** *Broc
 This is implemented using blocks. With blocks you can define a set of tasks to be executed in the rescue: section. These can be anything you want, and with careful planning you could should be able to get it to undo everything.
 Though if the system is broken in some unusual way, your 'undo' tasks may also fail. If your system is in a VM where you could checkpoint/snapshot, or running on a filesystem (ie zfs) that supports checkpoints/snapshots you could certainly use those facilities to revert.
 
-## [ansible.cfg](#Ansible%20Basics%20wiki)
+## [ansible.cfg](#Ansible-Basics-wiki)
 
 Configuration file will be search in the following order:
 
@@ -35,7 +35,7 @@ host_key_checking = False # this disable the lookup in known hosts and the promp
 private_key_file = ~/.ssh/aws.pem # where the private key is located, if not set it will use id_rsa
 ```
 
-## [Inventory.ini](#Ansible%20Basics%20wiki)
+## [Inventory.ini](#Ansible-Basics-wiki)
 
 The default inventory file is located in /etc/ansible/hosts, but that can be changed in ansible.cfg, or with -i /path/to/file using the command line.
 
@@ -70,7 +70,7 @@ ansible -m ping \!web # execute on all but this group
 ansible -m ping web[0] # execute on the first of array
 ```
 
-## [Ansible Commands](#Ansible%20Basics%20wiki)
+## [Ansible Commands](#Ansible-Basics-wiki)
 
 ```bash
 ansible -m shell -a "uname" all # ansible -module shell -attribute "uname" to be executed on all hosts in the inventory.ini
@@ -88,7 +88,7 @@ ansible-vault edit secret-variables.yml # Edit the vault opens in the default ba
 ansible-vault view secret-variables.yml # View the content of the vault file.
 ```
 
-## [Ansible Tasks](#Ansible%20Basics%20wiki)
+## [Ansible Tasks](#Ansible-Basics-wiki)
 
 Ansible tasks are a way to run adhoc commands against our inventory in a one-line single executable. Tasks are the basic building blocks of Ansible's execution and configuration.  
 Command consist of the Ansible command, options, and host-pattern.  
@@ -99,7 +99,7 @@ Example of pinging all the hosts associated with out inventory.
 # ansible command,  the module,  ping, all hosts listed in the inventory file.
 ```
 
-## [Ansible Playbooks](#Ansible%20Basics%20wiki)
+## [Ansible Playbooks](#Ansible-Basics-wiki)
 
 + Playbooks are a way to congregate ordered processes and manage configuration needed to build out a remote system.
 
@@ -188,7 +188,7 @@ Edit config file and restart using handlers
   - import_playbook: setup-lb.yml
   ```
 
-## [Variables](#Ansible%20Basics%20wiki)
+## [Variables](#Ansible-Basics-wiki)
 
 Ansible provide us with variables and metadata about the host we are interacting with when running playbooks.
 
@@ -241,7 +241,7 @@ ansible -m setup app1 # Show the gathered facts or metadata for host app1
         msg: "{{ dir_content }}" # will display the content of this variable, which was generated from the ls -la command.
 ```
 
-## [Roles](#Ansible%20Basics%20wiki)
+## [Roles](#Ansible-Basics-wiki)
 
 Ansible provides a framework that makes each part of variables. tasks, templates and modules fully independent of one another.
 
@@ -279,7 +279,7 @@ inventory  test.yml
 main.yml
 ```
 
-## [Check Mode](#Ansible%20Basics%20wiki)
+## [Check Mode](#Ansible-Basics-wiki)
 
 Check mode or Dry Run Reports changes that Ansible would have to make on the end hosts rather than applying the changes.
 
@@ -293,7 +293,7 @@ Check mode or Dry Run Reports changes that Ansible would have to make on the end
 ansible-playbook playbook_name.yml --check
 ```
 
-## [Error handling in Playbooks](#Ansible%20Basics%20wiki)
+## [Error handling in Playbooks](#Ansible-Basics-wiki)
 
 Change the default behavior of Ansible when certain events happen that may or may not need to report as a failure or changed status.
 
@@ -311,7 +311,7 @@ Change the default behavior of Ansible when certain events happen that may or ma
         ignore_errors: yes # This is how to ignore error
 ```
 
-## [Tags](#Ansible%20Basics%20wiki)
+## [Tags](#Ansible-Basics-wiki)
 
 Assigning **tags** to specific tasks in playbooks allows you to only call certain tasks in a very long playbook.
 
@@ -342,7 +342,7 @@ ansible-playbook playbook_name.yml --tags upload # This will run only the tags w
 ansible-playbook playbook_name.yml --skip-tags upload # This will play all but the upload tagged tasks.
 ```
 
-## [Ansible Vault](#Ansible%20Basics%20wiki)
+## [Ansible Vault](#Ansible-Basics-wiki)
 
 Ansible **Vault** is a way to keep sensitive information in encrypted files, rather than plain texts, in your playbooks.
 
@@ -364,7 +364,7 @@ ansible-vault view secret-variables.yml
 ansible-playbook playbook_name.yml --ask-vault-pass
 ```
 
-## [Prompts](#Ansible%20Basics%20wiki)
+## [Prompts](#Ansible-Basics-wiki)
 
 There may be playbooks you run that need to prompt the user for certain input. You can use this  in the **'vars_prompt'** section.
 
