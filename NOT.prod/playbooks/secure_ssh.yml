@@ -1,0 +1,6 @@
+#  secure_ssh.yml
+---
+- hosts: ct
+  become: yes
+  roles: 
+    - secure_ssh
