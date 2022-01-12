@@ -1,6 +1,0 @@
-# uname.yml
----
-  - hosts: web:lb
-    tasks:
-      - name : Get Os type
-        shell: uname

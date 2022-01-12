@@ -1,8 +1,0 @@
-#  secure_ssh.yml
----
-- hosts: ct1
-  become: yes
-  vars_files:
-    - /home/jordan/ansible/NOT.prod/playbooks/secure_ssh.yml
-  roles: 
-    - secure_ssh

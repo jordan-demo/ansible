@@ -1,6 +1,0 @@
-# check-status.yml
----
-  - hosts: web:lb
-    tasks:
-      - name: Check status of apache
-        command: service httpd status

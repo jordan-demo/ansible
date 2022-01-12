@@ -1,7 +1,0 @@
-# apt-update.yml
----
-  - hosts: web:lb
-    become: true
-    tasks:
-      - name: Update packages
-        apt: name=* state=latest
